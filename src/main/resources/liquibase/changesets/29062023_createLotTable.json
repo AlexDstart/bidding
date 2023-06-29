@@ -7,6 +7,7 @@
           "author": "VVS",
           "changes": [
             {
+
               "createTable": {
                 "tableName": "lot",
                 "columns": [
