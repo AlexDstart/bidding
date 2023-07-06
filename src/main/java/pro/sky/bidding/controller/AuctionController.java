@@ -66,7 +66,7 @@ public class AuctionController {
         return started ? ResponseEntity.ok().build() : new ResponseEntity<>("Лот не найден", HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/bid")
+    @PostMapping("/{lotId}/start")
     @Operation(summary = "Сделать ставку по лоту", description = """
             Создает новую ставку по лоту.
             Если лот в статусе CREATED или STOPPED, то должна вернутся ошибка""")

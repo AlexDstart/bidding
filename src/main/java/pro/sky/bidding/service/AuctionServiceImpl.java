@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pro.sky.bidding.dto.*;
 import pro.sky.bidding.enums.LotStatus;
+import pro.sky.bidding.exeption.EmptyLot;
+import pro.sky.bidding.exeption.NothingFoundById;
+import pro.sky.bidding.exeption.WrongLotStatus;
 import pro.sky.bidding.model.Bid;
 import pro.sky.bidding.model.Lot;
 import pro.sky.bidding.repository.BidRepository;
@@ -47,15 +50,15 @@ public class AuctionServiceImpl implements AuctionService {
     @Cacheable("firstBidder")
     public String getFirstBidder(int lotId) {
         Lot lot = lotRepository.findById(lotId).orElse(null);
-        if (lot == null) {
-            return "Лот не найден";
+        if(lot==null) {
+        throw new NothingFoundById(lotId);
         }
         if (lot.getStatus() == LotStatus.CREATED) {
-            return "Лот в неверном статусе";
+            throw new WrongLotStatus();
         }
         Optional<Bid> firstBidOptional = lot.getBidsById().stream().findFirst();
         if (firstBidOptional.isEmpty()) {
-            return "Заявок по этому лоту нет";
+            throw new EmptyLot();
         }
         Bid firstBid = firstBidOptional.get();
         BidDTO firstBidder = new BidDTO();
@@ -70,13 +73,12 @@ public class AuctionServiceImpl implements AuctionService {
         logger.info("Запущен метод getMostFrequentBidder");
         Lot lot = lotRepository.findById(lotId).orElse(null);
         if (lot == null) {
-            logger.info("Лот не найден, lot = " + lot);
+            throw new NothingFoundById(lotId);
 
-            return "Лот не найден";
         }
         List<Bid> bids = lot.getBidsById();
         if (bids.isEmpty()) {
-            return "Заявок по этому лоту нет";
+            throw new EmptyLot();
         }
         Map<String, Long> bidderCounts = bids.stream()
                 .collect(Collectors.groupingBy(Bid::getBidderName, Collectors.counting()));
@@ -140,7 +142,7 @@ public class AuctionServiceImpl implements AuctionService {
         Lot lot = lotRepository.findById(lotId).orElse(null);
         logger.debug("Обращение к таблице lot , результат - lot: " + lot);
         if (lot == null) {
-            return "Лот не найден";
+            throw new NothingFoundById(lotId);
         }
         if (lot.getStatus() != LotStatus.STARTED) {
             return "Лот в неверном статусе";
