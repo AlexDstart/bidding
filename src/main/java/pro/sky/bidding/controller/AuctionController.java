@@ -33,15 +33,10 @@ public class AuctionController {
 
     @GetMapping("/{id}/frequent")
     @Operation(summary = "Возвращает имя ставившего на данный лот наибольшее количество раз", description = "Наибольшее количество вычисляется из общего количества ставок на лот")
-    public ResponseEntity<String> getMostFrequentBidder(@PathVariable("id") int lotId) {
-        ResponseEntity<String> response;
-        String result = auctionService.getMostFrequentBidder(lotId);
-        response = switch (result) {
-            case "Лот не найден", "Заявок по этому лоту нет", "Не удалось определить наиболее активного участника" -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
-            default -> ResponseEntity.status(HttpStatus.OK).body(result);
-        };
-        return response;
-    }
+    public String getMostFrequentBidder(@PathVariable("id") int lotId) {
+        return auctionService.getMostFrequentBidder(lotId);
+        }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Получить полную информацию о лоте", description = "Возвращает полную информацию о лоте с последним ставившим и текущей ценой")
@@ -63,16 +58,11 @@ public class AuctionController {
     @Operation(summary = "Сделать ставку по лоту", description = """
             Создает новую ставку по лоту.
             Если лот в статусе CREATED или STOPPED, то должна вернутся ошибка""")
-    public ResponseEntity<String> createBid(@PathVariable("Id") int lotId, @RequestBody CreateBidDTO createBidDTO) {
-        ResponseEntity<String> response;
-        String result = auctionService.createBid(lotId, createBidDTO);
-        response = switch (result) {
-            case "Лот не найден" -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
-            case "Лот в неверном статусе" -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-            default -> ResponseEntity.status(HttpStatus.OK).body(result + " для " + createBidDTO.getBidderName());
-        };
-        return response;
+    public String createBid(@PathVariable("Id") int lotId, @RequestBody CreateBidDTO createBidDTO) {
+
+       return auctionService.createBid(lotId, createBidDTO);
     }
+
 
     @PostMapping("/{id}/stop")
     @Operation(summary = "Остановить торги по лоту", description = """
