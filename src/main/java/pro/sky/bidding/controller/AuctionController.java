@@ -70,7 +70,7 @@ public class AuctionController {
     @Operation(summary = "Сделать ставку по лоту", description = """
             Создает новую ставку по лоту.
             Если лот в статусе CREATED или STOPPED, то должна вернутся ошибка""")
-    public ResponseEntity<String> createBid(@RequestParam("Id") int lotId, @RequestBody CreateBidDTO createBidDTO) {
+    public ResponseEntity<String> createBid(@PathVariable("Id") int lotId, @RequestBody CreateBidDTO createBidDTO) {
         ResponseEntity<String> response;
         String result = auctionService.createBid(lotId, createBidDTO);
         response = switch (result) {

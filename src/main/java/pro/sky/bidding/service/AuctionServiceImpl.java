@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.bidding.dto.*;
 import pro.sky.bidding.enums.LotStatus;
 import pro.sky.bidding.exeption.EmptyLot;
+import pro.sky.bidding.exeption.NoParticipant;
 import pro.sky.bidding.exeption.NothingFoundById;
 import pro.sky.bidding.exeption.WrongLotStatus;
 import pro.sky.bidding.model.Bid;
@@ -94,7 +95,7 @@ public class AuctionServiceImpl implements AuctionService {
         logger.info("Участник с максимальным количеством ставок - mostFrequentBidders: " + mostFrequentBidders);
 
         if (mostFrequentBidders.size() != 1) {
-            return "Не удалось определить наиболее активного участника";
+            throw new NoParticipant();
         }
         String mostFrequentBidderName = mostFrequentBidders.get(0);
         Optional<Bid> mostFrequentBidderLastBid = bids.stream()
@@ -145,7 +146,7 @@ public class AuctionServiceImpl implements AuctionService {
             throw new NothingFoundById(lotId);
         }
         if (lot.getStatus() != LotStatus.STARTED) {
-            return "Лот в неверном статусе";
+            throw new WrongLotStatus();
         }
         Bid bid = new Bid();
         bid.setBidderName(createBidDTO.getBidderName());
