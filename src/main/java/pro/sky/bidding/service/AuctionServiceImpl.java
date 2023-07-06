@@ -52,7 +52,7 @@ public class AuctionServiceImpl implements AuctionService {
     public String getFirstBidder(int lotId) {
         Lot lot = lotRepository.findById(lotId).orElse(null);
         if(lot==null) {
-        throw new NothingFoundById(lotId);
+            throw new NothingFoundById(lotId);
         }
         if (lot.getStatus() == LotStatus.CREATED) {
             throw new WrongLotStatus();

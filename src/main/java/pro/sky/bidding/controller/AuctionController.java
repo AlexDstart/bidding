@@ -27,15 +27,8 @@ public class AuctionController {
 
     @GetMapping("/{id}/first")
     @Operation(summary = "Получить информацию о первом ставившем на лот", description = "Возвращает первого ставившего на этот лот")
-    public ResponseEntity<String> getFirstBidder(@PathVariable("id") int lotId) {
-        ResponseEntity<String> response;
-        String result = auctionService.getFirstBidder(lotId);
-        response = switch (result) {
-            case "Лот не найден", "Заявок по этому лоту нет" -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
-            case "Лот в неверном статусе" -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-            default -> ResponseEntity.status(HttpStatus.OK).body(result);
-        };
-        return response;
+    public String getFirstBidder(@PathVariable("id") int lotId) {
+        return auctionService.getFirstBidder(lotId);
     }
 
     @GetMapping("/{id}/frequent")
