@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+/.idea/
+/.mvn/
+/src/main/resources/static/
+/src/main/resources/templates/
+/src/test/
+/target/
+/Auction.iml
+/HELP.md
+/mvnw
+/mvnw.cmd
